@@ -1,5 +1,6 @@
 from flask import Flask,render_template,session,request,redirect,url_for,flash
-import mysql.connector,hashlib
+import mysql.connector
+import hashlib
 import matplotlib.pyplot as plt
 import numpy as np
 
