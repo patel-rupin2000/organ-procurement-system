@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "C:\\Users\\Rupin Patel\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe",
+    "appService.defaultWebAppToDeploy": "/subscriptions/feae2258-995b-4acb-bb68-671215871a22/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/organ-transplant-management-system",
+    "appService.deploySubpath": "."
+}
