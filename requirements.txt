@@ -1,5 +1,4 @@
 Flask
 mysql.connector
-hashlib
 matplotlib
 numpy
