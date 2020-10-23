@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Rupin Patel\Documents\GitHub\organ-procurement-system\.venv"
+VIRTUAL_ENV="C:\Users\Rupin Patel\Desktop\DBMS_PROJECT\.venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

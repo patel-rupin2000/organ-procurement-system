@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Rupin Patel\Documents\GitHub\organ-procurement-system\.venv
+set VIRTUAL_ENV=C:\Users\Rupin Patel\Desktop\DBMS_PROJECT\.venv
 
 if not defined PROMPT set PROMPT=$P$G
 

@@ -7,9 +7,9 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
-		
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css') }}">
 	</head>
-	<header>
+	<header style="background-color: rgb(86, 215, 255);">
 		<div style="align-items: center; align-content: center; margin-left: 20%;">
 		
 			<h1 style="color:#16325e;">ORGAN TRANSPLANTATION AND PROCUREMENT SYSTEM</h1>
@@ -67,19 +67,11 @@
 				
 				  <div class="col">
 					  <h1>PUBLIC LOGIN</h1>
-					<form class="container" action="/public_login" method="POST">
-						<div class="form-group">
-							<label>Username</label>
-							<input name = "username" type="text" class="form-control" id="inputUsername" aria-describedby="emailHelp" placeholder="Enter username">
-						</div>
-						<div class="form-group">
-							<label>Password</label>
-							<input name = "password" type="password" class="form-control" id="inputPassword" placeholder="Password">
-						</div>
-						<button type="submit" class="btn btn-primary">Submit</button>
-                        <a href="signUp" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Primary link</a>
+                      <form method="get" action="/login_public">
+                         <button type="submit" class="btn btn-primary">Public Portal</button>
+</form>
 
-					</form>
+
 				  </div>
 				  
 				</div>

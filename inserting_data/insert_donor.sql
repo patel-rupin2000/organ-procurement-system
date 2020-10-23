@@ -1,5 +1,5 @@
 insert into Donor values
-(1,'Heart','Reason-1',97,90),
+(1,'Heart','Reason-1',97,90,"Rupin"),
 (2,'Pancreas','Reason-2',79,41),
 (3,'Pancreas','Reason-3',1,95),
 (4,'Intestine','Reason-4',60,96),

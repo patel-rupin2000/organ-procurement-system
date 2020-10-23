@@ -1,9 +1,8 @@
 from flask import Flask,render_template,session,request,redirect,url_for,flash
-import mysql.connector
-import hashlib
+import mysql.connector,hashlib
 import matplotlib.pyplot as plt
 import numpy as np
-
+import pyrebase
 
 mydb = mysql.connector.connect(
   host='localhost',
@@ -15,6 +14,20 @@ mycursor = mydb.cursor(buffered=True)
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
+config = {
+    "apiKey": "AIzaSyA_6TVgrRc_3-Up3HX7E7zmeFrrLsYySWA",
+    "authDomain": "dbmsproject-e2045.firebaseapp.com",
+    "databaseURL": "https://dbmsproject-e2045.firebaseio.com",
+    "projectId": "dbmsproject-e2045",
+    "storageBucket": "dbmsproject-e2045.appspot.com",
+    "messagingSenderId": "617402011498",
+    "appId": "1:617402011498:web:5d105653bc2337c0881f13",
+    "measurementId": "G-XK0KYDZEKP"
+}
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+db = firebase.database()
+person = {"is_logged_in": False, "name": "", "email": "", "uid": ""}
 
 @app.route("/",methods = ['POST', 'GET'])
 @app.route("/home",methods = ['POST','GET'])
@@ -28,38 +41,7 @@ def home():
             return render_template('home_public.html',username=session.get('username'))
         else :
             return home_student()
-@app.route("/signUp",methods=["POST"])
-def signUp():
-    return (render_template("signUp.html"))
 
-@app.route("/signUp",methods=["POST","GET"])
-def ver():
-    if(request.method=="POST"):
-        name=request.form['username']
-        password=request.form['password']
-        email_id=request.form['email_id']
-        mycursor.execute("INSERT INTO signup (name, password,emai_id) VALUES (%s, %s, %s)", (name, password,email_id))
-        mydb.commit()
-        return redirect(url_for('signUp'))
-
-
-@app.route("/public_login",methods = ['GET','POST'])
-def public_login():
-    if request.method=='POST' :
-        query = """SELECT * FROM login WHERE username = '%s'""" %(request.form['username'])
-        mycursor.execute(query)
-        res = mycursor.fetchall()
-        if mycursor.rowcount == 0:
-            return home()
-        if request.form['password'] != res[0][1]:
-            return render_template('login.html')
-        else:
-            session['login'] = True
-            session['username'] = request.form['username']
-            session['password'] = request.form['password']
-            session['isPublic'] = (request.form['username']=='admin')
-            return home()
-    return render_template('login.html')
 
 @app.route("/login",methods = ['GET','POST'])
 def login():
@@ -78,6 +60,91 @@ def login():
             session['isAdmin'] = (request.form['username']=='admin')
             return home()
     return render_template('login.html')
+@app.route("/login_public")
+def login_public():
+    return render_template("login_public.html")
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
+@app.route("/welcome")
+def welcome():
+    if person["is_logged_in"] == True:
+        return render_template("welcome.html", email = person["email"], name = person["name"])
+    else:
+        return redirect(url_for('login_public'))
+@app.route("/result", methods = ["POST", "GET"])
+def result():
+    if request.method == "POST":        #Only if data has been posted
+        result = request.form           #Get the data
+        email = result["email"]
+        password = result["pass"]
+
+        mycursor.execute("select name from signup where email='%s'"%(email))
+        name = mycursor.fetchone()
+        try:
+            #Try signing in the user with the given information
+            user = auth.sign_in_with_email_and_password(email, password)
+            #Insert the user data in the global person
+            global person
+            person["is_logged_in"] = True
+            person["email"] = user["email"]
+            person["uid"] = user["localId"]
+            person["name"] = name[0]
+            #Get the name of the user
+            data = db.child("users").get()
+            person["name"] = data.val()[person["uid"]]["name"]
+            #Redirect to welcome page
+            auth.sign_in_with_email_and_password(email, password)
+            return redirect(url_for('welcome'))
+        except:
+            #If there is any error, redirect back to login
+            return redirect(url_for('result'))
+    else:
+        if person["is_logged_in"] == True:
+            return redirect(url_for('welcome'))
+        else:
+            return redirect(url_for('result'))
+@app.route("/register", methods = ["POST", "GET"])
+def register():
+    if request.method == "POST":        #Only listen to POST
+        result = request.form           #Get the data submitted
+        email = result["email"]
+        password = result["pass"]
+        name = result["name"]
+        val=[]
+        val.append(name)
+        val.append(password)
+        val.append(email)
+        sql = "INSERT INTO signup(name,password,email)VALUES(%s,%s,%s)"
+        mycursor.execute(sql, val)
+        mydb.commit()
+        try:
+            #Try creating the user account using the provided data
+            auth.create_user_with_email_and_password(email, password)
+            #Login the user
+            user = auth.sign_in_with_email_and_password(email, password)
+            #Add data to global person
+            #global person
+            person["is_logged_in"] = True
+            person["email"] = user["email"]
+            person["uid"] = user["localId"]
+            person["name"] = name
+            #Append data to the firebase realtime database
+            data = {"name": name, "email": email}
+            db.child("users").child(person["uid"]).set(data)
+            return redirect(url_for('welcome'))
+
+        except:
+            #If there is any error, redirect to register
+            return redirect(url_for('register'))
+
+    else:
+        if person["is_logged_in"] == True:
+            return redirect(url_for('welcome'))
+        else:
+            return redirect(url_for('register'))
+
+
 
 @app.route("/show_update_detail",methods=['POST','GET'])
 def show_update_detail():
@@ -801,6 +868,10 @@ def update_organization_details():
 #----------------------------Logout-----------------------------------------
 @app.route("/logout", methods=['POST','GET'])
 def logout():
+    person["is_logged_in"] = False
+
+
+
     session['login'] = False
     session['isAdmin'] = False
     return redirect("/login")
@@ -1092,7 +1163,6 @@ def stats():
         B.append(organ[1])
     plt.pie(B, labels = A)
     plt.savefig('./static/donor_stat.png')
-    # plt.show()
     plt.close()
     A.clear()
     B.clear()
