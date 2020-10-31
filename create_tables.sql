@@ -5,22 +5,16 @@ CREATE TABLE login(
     username VARCHAR(20) NOT NULL,
     password VARCHAR(20) NOT NULL
 );
+CREATE TABLE signup(
+  name VARCHAR(45),
+  email VARCHAR(45)
+);
 
 INSERT INTO login VALUES ('admin','admin');
-CREATE TABLE `signup` (
-  `idsignup` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  `emai_id` varchar(45) NOT NULL,
-  `otp` bigint NOT NULL,
-  PRIMARY KEY (`idsignup`),
-  UNIQUE KEY `emai_id_UNIQUE` (`emai_id`),
-  UNIQUE KEY `idsignup_UNIQUE` (`idsignup`),
-  UNIQUE KEY `otp_UNIQUE` (`otp`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-#table 1
+
+
 CREATE TABLE User(
     User_ID int NOT NULL,
     Name varchar(20) NOT NULL,
@@ -33,14 +27,14 @@ CREATE TABLE User(
     PRIMARY KEY(User_ID)
 );
 
-#table 2
+
 CREATE TABLE User_phone_no(
     User_ID int NOT NULL,
     phone_no varchar(15),
     FOREIGN KEY(User_ID) REFERENCES User(User_ID) ON DELETE CASCADE
 );
 
-#table 3
+
 CREATE TABLE Organization(
   Organization_ID int NOT NULL,
   Organization_name varchar(20) NOT NULL,
@@ -49,7 +43,6 @@ CREATE TABLE Organization(
   PRIMARY KEY(Organization_ID)
 );
 
-#table 4
 CREATE TABLE Doctor(
   Doctor_ID int NOT NULL,
   Doctor_Name varchar(20) NOT NULL,
@@ -59,7 +52,7 @@ CREATE TABLE Doctor(
   PRIMARY KEY(Doctor_ID)
 );
 
-#table 5
+
 CREATE TABLE Patient(
     Patient_ID int NOT NULL,
     organ_req varchar(20) NOT NULL,
@@ -71,7 +64,7 @@ CREATE TABLE Patient(
     PRIMARY KEY(Patient_Id, organ_req)
 );
 
-#table 6
+
 CREATE TABLE Donor(
   Donor_ID int NOT NULL,
   organ_donated varchar(20) NOT NULL,
@@ -83,7 +76,7 @@ CREATE TABLE Donor(
   PRIMARY KEY(Donor_ID, organ_donated)
 );
 
-#table 7
+
 CREATE TABLE Organ_available(
   Organ_ID int NOT NULL AUTO_INCREMENT,
   Organ_name varchar(20) NOT NULL,
@@ -92,7 +85,7 @@ CREATE TABLE Organ_available(
   PRIMARY KEY(Organ_ID)
 );
 
-#table 8
+
 CREATE TABLE Transaction(
   Patient_ID int NOT NULL,
   Organ_ID int NOT NULL,
@@ -104,21 +97,20 @@ CREATE TABLE Transaction(
   PRIMARY KEY(Patient_ID,Organ_ID)
 );
 
-#table 9
+
 CREATE TABLE Organization_phone_no(
   Organization_ID int NOT NULL,
   Phone_no varchar(15),
   FOREIGN KEY(Organization_ID) REFERENCES Organization(Organization_ID) ON DELETE CASCADE
 );
 
-#table 10
 CREATE TABLE Doctor_phone_no(
   Doctor_ID int NOT NULL,
   Phone_no varchar(15),
   FOREIGN KEY(Doctor_ID) REFERENCES Doctor(Doctor_ID) ON DELETE CASCADE
 );
 
-#table 11
+
 CREATE TABLE Organization_head(
   Organization_ID int NOT NULL,
   Employee_ID int NOT NULL,
@@ -128,28 +120,6 @@ CREATE TABLE Organization_head(
   FOREIGN KEY(Organization_ID) REFERENCES Organization(Organization_ID) ON DELETE CASCADE,
   PRIMARY KEY(Organization_ID,Employee_ID)
 );
---
--- delimiter //
--- create trigger ADD_DONOR
--- after insert
--- on Donor
--- for each row
--- begin
--- insert into Organ_available(Organ_name, Donor_ID)
--- values (new.organ_donated, new.Donor_ID);
--- end//
--- delimiter ;
---
--- delimiter //
--- create trigger REMOVE_ORGAN
--- after insert
--- on Transaction
--- for each row
--- begin
--- delete from Organ_available
--- where Organ_ID = new.Organ_ID;
--- end//
--- delimiter ;
 
 create table log (
   querytime datetime,
@@ -221,5 +191,3 @@ insert into log values
 (now(), concat("Added Transaction :: Patient ID : ", cast(new.Patient_ID as char), "; Donor ID : " ,cast(new.Donor_ID as char)));
 end //
 
--- INSERT INTO User VALUES(10,'Random1','2000-01-01',1,NULL,'Street 1','City 1','State 1');
--- INSERT INTO User VALUES(20,'Random2','2000-01-02',1,NULL,'Street 2','City 2','State 2');

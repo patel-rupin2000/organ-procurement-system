@@ -7,7 +7,7 @@ import pyrebase
 mydb = mysql.connector.connect(
   host='localhost',
   user='root',
-  password='Rrp@21122000',
+  password='********',
   database = 'DBMS_PROJECT'
 )
 mycursor = mydb.cursor(buffered=True)
@@ -15,14 +15,13 @@ mycursor = mydb.cursor(buffered=True)
 app = Flask(__name__)
 app.secret_key = "super secret key"
 config = {
-    "apiKey": "AIzaSyA_6TVgrRc_3-Up3HX7E7zmeFrrLsYySWA",
-    "authDomain": "dbmsproject-e2045.firebaseapp.com",
-    "databaseURL": "https://dbmsproject-e2045.firebaseio.com",
-    "projectId": "dbmsproject-e2045",
-    "storageBucket": "dbmsproject-e2045.appspot.com",
-    "messagingSenderId": "617402011498",
-    "appId": "1:617402011498:web:5d105653bc2337c0881f13",
-    "measurementId": "G-XK0KYDZEKP"
+    "apiKey": "AIzaSyD06kI5ACT1GDMrIs6N035mu8bAIEF-rDA",
+    "authDomain": "dbms-project-9fab5.firebaseapp.com",
+    "databaseURL": "https://dbms-project-9fab5.firebaseio.com",
+    "projectId": "dbms-project-9fab5",
+    "storageBucket": "dbms-project-9fab5.appspot.com",
+    "messagingSenderId": "191339204412",
+    "appId": "1:191339204412:web:44758ee2be680db12e9839"
 }
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
@@ -336,7 +335,7 @@ def add_Donor():
             temp = 'NULL'
         val = val + (temp,)
     mycursor.execute( "START TRANSACTION;" )
-    qry = "INSERT INTO Donor Values (%s,%s,%s,%s,%s)"%val
+    qry = "INSERT INTO Donor Values (%s,%s,%s,%s,%s,%s)"%val
     print(qry)
     success = True
     error = False
@@ -828,42 +827,6 @@ def update_organization_details():
     mycursor.execute(qry2)
     res = mycursor.fetchone()
     return render_template("show_detail.html",res = res,fields=fields,not_found = False)
-# @app.route("/update_organization_head_page",methods = ['POST','GET'])
-# def update_organization_head_page():
-#     if not session.get('login'):
-#         return redirect( url_for('home') )
-#     qry_upd = "Select * from Organization_head"
-#     mycursor.execute(qry_upd)
-#     fields_upd = mycursor.column_names
-#     upd_res=[None]*len(fields_upd)
-#     return render_template('update_organization_head_page.html',fields = fields_upd,res = upd_res)
-# @app.route("/update_organization_head_details",methods = ['GET','POST'])
-# def update_organization_head_details():
-#     if not session.get('login'):
-#         return redirect( url_for('home') )
-#     mycursor.execute("SELECT * from Organization_head")
-#     fields = mycursor.column_names
-#     qry = "UPDATE Organization_head SET "
-#     for field in fields:
-#         if request.form[field] not in ['None','']:
-#             if field in ['Organization_ID','Employee_ID','Term_length']:
-#                 qry = qry + "%s = %s , " %(field,request.form[field])
-#             else:
-#                 qry = qry + " %s = \'%s\' , " %(field,request.form[field])
-#         else:
-#             qry = qry + "%s = NULL , " %(field)
-#     qry = qry[:-2]
-#     qry = qry + "WHERE Organization_ID = %s and Employee_ID = %s;" %(request.form['Organization_ID'],request.form['Employee_ID'])
-#     print(qry)
-#     try:
-#         mycursor.execute(qry)
-#     except:
-#         return render_template('error_page.html',qry=qry)
-#     mydb.commit()
-#     qry2 = "select * from Organization WHERE Organization_ID = %s and Employee_ID = %s;" %(request.form['Organization_ID'],request.form['Employee_ID'])
-#     mycursor.execute(qry2)
-#     res = mycursor.fetchone()
-#     return render_template("show_detail.html",res = res,fields=fields,not_found = False)
 
 #----------------------------Logout-----------------------------------------
 @app.route("/logout", methods=['POST','GET'])
@@ -880,7 +843,7 @@ def logout():
 
 @app.route("/search_User_details",methods=['GET','POST'])
 def search_User_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from User"
     mycursor.execute(qry)
@@ -891,7 +854,7 @@ def search_User_details():
 
 @app.route("/search_Patient_details",methods=['GET','POST'])
 def search_Patient_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from Patient"
     mycursor.execute(qry)
@@ -902,7 +865,7 @@ def search_Patient_details():
 
 @app.route("/search_Donor_details",methods=['GET','POST'])
 def search_Donor_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from Donor"
     mycursor.execute(qry)
@@ -913,9 +876,9 @@ def search_Donor_details():
 
 @app.route("/search_Organ_details",methods=['GET','POST'])
 def search_Organ_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
-    qry = "SELECT * from Organ_available"
+    qry = "SELECT Donor.Donor_ID,Donor.organ_donated,Donor.donor_name,Transaction.Patient_ID from Donor inner join Transaction on Donor.Donor_ID=Transaction.Donor_ID where Transaction.Status=0;"
     mycursor.execute(qry)
     fields = mycursor.column_names
     res = mycursor.fetchall()
@@ -924,7 +887,7 @@ def search_Organ_details():
 
 @app.route("/search_Organization_details",methods=['GET','POST'])
 def search_Organization_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from Organization"
     mycursor.execute(qry)
@@ -935,7 +898,7 @@ def search_Organization_details():
 
 @app.route("/search_Organization_head_details",methods=['GET','POST'])
 def search_Organization_head_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from Organization_head"
     mycursor.execute(qry)
@@ -946,7 +909,7 @@ def search_Organization_head_details():
 
 @app.route("/search_Doctor_details",methods=['GET','POST'])
 def search_Doctor_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from Doctor"
     mycursor.execute(qry)
@@ -957,7 +920,7 @@ def search_Doctor_details():
 
 @app.route("/search_Transaction",methods=['GET','POST'])
 def search_Transaction_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from Transaction"
     mycursor.execute(qry)
@@ -967,7 +930,7 @@ def search_Transaction_details():
 
 @app.route("/search_log",methods=['GET','POST'])
 def search_log_details():
-    if not session.get('login'):
+    if (session.get('login'))==False and (session.get('is_logged_in'))==False:
         return redirect( url_for('home') )
     qry = "SELECT * from log"
     mycursor.execute(qry)
@@ -1151,7 +1114,7 @@ def seen_message():
 
 @app.route('/statistics', methods=['GET','POST'])
 def stats():
-    if not session.get('login') or not session.get('isAdmin'):
+    if (session.get('login')) == False and (session.get('is_logged_in')) == False:
         return redirect( url_for('home') )
     qry = "select organ_donated, count(Donor_ID) from Donor group by organ_donated"
     mycursor.execute(qry)
@@ -1215,7 +1178,6 @@ def stats():
     plt.legend(loc='best')
     plt.savefig('./static/success.jpeg')
     return render_template('statistics.html')
-
 
 
 if __name__ == "__main__":
