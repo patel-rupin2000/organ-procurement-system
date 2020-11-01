@@ -7,7 +7,7 @@ import pyrebase
 mydb = mysql.connector.connect(
   host='localhost',
   user='root',
-  password='Rrp@21122000',
+  password='*********',
   database = 'DBMS_PROJECT'
 )
 mycursor = mydb.cursor(buffered=True)
