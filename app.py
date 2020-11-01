@@ -7,7 +7,7 @@ import pyrebase
 mydb = mysql.connector.connect(
   host='localhost',
   user='root',
-  password='********',
+  password='Rrp@21122000',
   database = 'DBMS_PROJECT'
 )
 mycursor = mydb.cursor(buffered=True)
@@ -73,30 +73,30 @@ def welcome():
         return redirect(url_for('login_public'))
 @app.route("/result", methods = ["POST", "GET"])
 def result():
-    if request.method == "POST":        #Only if data has been posted
-        result = request.form           #Get the data
+    if request.method == "POST":        
+        result = request.form           
         email = result["email"]
         password = result["pass"]
 
         mycursor.execute("select name from signup where email='%s'"%(email))
         name = mycursor.fetchone()
         try:
-            #Try signing in the user with the given information
+    
             user = auth.sign_in_with_email_and_password(email, password)
-            #Insert the user data in the global person
+            
             global person
             person["is_logged_in"] = True
             person["email"] = user["email"]
             person["uid"] = user["localId"]
             person["name"] = name[0]
-            #Get the name of the user
+            
             data = db.child("users").get()
             person["name"] = data.val()[person["uid"]]["name"]
-            #Redirect to welcome page
+            
             auth.sign_in_with_email_and_password(email, password)
             return redirect(url_for('welcome'))
         except:
-            #If there is any error, redirect back to login
+            
             return redirect(url_for('result'))
     else:
         if person["is_logged_in"] == True:
@@ -105,36 +105,35 @@ def result():
             return redirect(url_for('result'))
 @app.route("/register", methods = ["POST", "GET"])
 def register():
-    if request.method == "POST":        #Only listen to POST
-        result = request.form           #Get the data submitted
+    if request.method == "POST":        
+        result = request.form           
         email = result["email"]
         password = result["pass"]
         name = result["name"]
         val=[]
         val.append(name)
-        val.append(password)
+        
         val.append(email)
-        sql = "INSERT INTO signup(name,password,email)VALUES(%s,%s,%s)"
+        sql = "INSERT INTO signup(name,email)VALUES(%s,%s)"
         mycursor.execute(sql, val)
         mydb.commit()
         try:
-            #Try creating the user account using the provided data
+        
             auth.create_user_with_email_and_password(email, password)
-            #Login the user
+            
             user = auth.sign_in_with_email_and_password(email, password)
-            #Add data to global person
-            #global person
+            
             person["is_logged_in"] = True
             person["email"] = user["email"]
             person["uid"] = user["localId"]
             person["name"] = name
-            #Append data to the firebase realtime database
+            
             data = {"name": name, "email": email}
             db.child("users").child(person["uid"]).set(data)
             return redirect(url_for('welcome'))
 
         except:
-            #If there is any error, redirect to register
+            
             return redirect(url_for('register'))
 
     else:

@@ -1,17 +1,17 @@
 MYSQL CONNECTION:-
-1-run all the queries given in create_tables.sql file in your mysql database
+1-run all the queries given in create_tables.sql file in your mysql database.By creating the database name "DBMS_PROJECT".
 2-after that run all queries of insertions present in inserting_data folder run quries present in all sql file in that folder.
-3-change the some configuration in app.py file to connect mysql database with your project :-(from line-7 to line-12)
+3-change some configuration in app.py file to connect mysql database with your project :-(from line-7 to line-12)
 mydb = mysql.connector.connect(
   host='localhost',
   user='root',
   password='<password of your own mysql server>',
-  database = '<database name>'
+  database = 'DBMS_PROJECT'
 ) 
 
 Python Settings:-
 1-Install Python -version 3.8.0 with add to path.
-2-Install required libraries given in requirements.
+2-Install required libraries given in requirements.txt file.
 3-For installing libraries individually type command line "pip install <package name>".(flask,mysql.connector,matplotlib,hashlib,numpy,pyrebase4) this are main packages pip install this all packages and some dependency packages also.
 4-To install all libraries together type command line "pip install -r requiremnts.txt" by changing directory to the folder where you have save requirements.txt(This file itself present in the unziped folder) file.(if suppose some error occured install packages manually by following third step)
 5-change the directory to the Unziped folder and type  command line "python app.py" in command prompt to run project(to run app.py file).
