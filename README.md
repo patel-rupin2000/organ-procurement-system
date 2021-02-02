@@ -66,18 +66,18 @@ change this lines in app.py according to your configuration:
 
 config = {
 
-    "apiKey": "AIzaSyD06kI5ACT1GDMrIs6N035mu8bAIEF-rDA",
+    "apiKey": "****************************************",
     
-    "authDomain": "dbms-project-9fab5.firebaseapp.com",
+    "authDomain": "#####################################",
     
-    "databaseURL": "https://dbms-project-9fab5.firebaseio.com",
+    "databaseURL": "************************************",
     
-    "projectId": "dbms-project-9fab5",
+    "projectId": "###########",
     
-    "storageBucket": "dbms-project-9fab5.appspot.com",
+    "storageBucket": "***************************",
     
-    "messagingSenderId": "191339204412",
+    "messagingSenderId": "########################",
     
-    "appId": "1:191339204412:web:44758ee2be680db12e9839"
+    "appId": "***********************************"
     
 }
